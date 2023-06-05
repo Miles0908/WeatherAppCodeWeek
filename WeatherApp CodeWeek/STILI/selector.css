@@ -1,9 +1,0 @@
-.citySelector {
-  display: flex;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  align-items: center;
-  justify-content: space-evenly;
-  transform: rotate(360deg);
-  transition: all 0.7s;
-}
