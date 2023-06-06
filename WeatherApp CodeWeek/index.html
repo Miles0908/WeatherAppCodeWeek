@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="STILI/navbar.css" />
     <link rel="stylesheet" href="STILI/selector.css">
     <link rel="stylesheet" href="STILI/cities.css">
+    <link rel="stylesheet" href="STILI/modal.css">
     <script src="script.js" type="module"></script>
     <title>OpenWeather-App</title>
   </head>
@@ -34,20 +35,28 @@
       <div class="citySelector">
         <label for="cities">Scegli una citta:
           <select name="Province" id="selectProvince">
-            <option value="All"></option>
-            <option value="Agrigento">Agrigento</option>
-            <option value="Caltanissetta">Caltanissetta</option>
-            <option value="Catania">Catania</option>
-            <option value="Enna">Enna</option>
-            <option value="Messina">Messina</option>
-            <option value="Palermo">Palermo</option>
-            <option value="Ragusa">Ragusa</option>
-            <option value="Siracusa">Siracusa</option>
-            <option value="Trapani">Trapani</option>
+            
+            <option value="2525763">Agrigento</option>
+            <option value="2525448">Caltanissetta</option>
+            <option value="2525068">Catania</option>
+            <option value="2524818">Enna</option>
+            <option value="2524170">Messina</option>
+            <option value="2523920">Palermo</option>
+            <option value="2523650">Ragusa</option>
+            <option value="2523083">Siracusa</option>
+            <option value="2522876">Trapani</option>
           </select>
         </label>
       </div>
       <div id="root"></div>
+
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <h1>Show more details about weather</h1>
+
+          <span class="close">x</span>
+        </div>
+      </div>
     </main>
   </body>
 </html>

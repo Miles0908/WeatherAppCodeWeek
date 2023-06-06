@@ -4,24 +4,30 @@ const rootEl = document.querySelector("#root");
 
 const select = document.getElementById("selectProvince");
 
+let modal= document.getElementById("myModal");
+
+let span = document.getElementsByClassName("close")[0];
+
+const searchWeatherEl = document.querySelector("inputText");
+
 //CHIAMATE API
-const getData = async (lon, lat) => {
+
+const getData = async (idsArray) => {
+  const idsString = idsArray.join(",");
+
   const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lon}&lon=${lat}&appid=${API_KEY}`
+    `https://api.openweathermap.org/data/2.5/group?id=${idsString}&appid=${API_KEY}`
   );
 
   const data = await res.json();
   return data;
 };
 
-const getWeatherData = async (coord) => {
-  const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${coord.lon}&lon=${coord.lat}&appid=${API_KEY}`
-  );
-
-  const data = await res.json();
-  return data;
-};//END CHIAMATE API
+const getWeatherData = async (idsArray) => {
+  const weatherDataArray = await getData(idsArray);
+  return weatherDataArray;
+};
+//END CHIAMATE API
 
 //GENERATORE DELLE CARTE METEO
 const cityGen = (weatherData) => {
@@ -49,113 +55,115 @@ const cityGen = (weatherData) => {
 
   descriptionEl.textContent = weatherData.weather[0].description;
 
-  temperatureEl.textContent = (weatherData.main.temp - 273.15).toFixed(1);
+  temperatureEl.textContent = `${(weatherData.main.temp - 273.15).toFixed(1)}°c`;
 
+  wrapperEl.addEventListener("click", ()=>{
+    openModal(weatherData)
+  })
+  
   wrapperEl.appendChild(titleEl);
   wrapperEl.appendChild(temperatureEl);
   wrapperEl.appendChild(descriptionEl);
   wrapperEl.appendChild(iconEl);
+
+  //SE LA MODALE VIENE APERTA MOSTRA QUESTI ELEMENTI ADDIZIONALI
+  if (modal.style.display==="block"){
+    const minTempEl = document.createElement("h4"); 
+    const separatorEl= document.createElement("h4")
+    const separator2El= document.createElement("h4")
+    const separator3El= document.createElement("h4")
+    const separator4El= document.createElement("h4")
+    const maxTempEl = document.createElement("h4"); 
+    const feelsLikeEl = document.createElement("h4");
+    const humidityEl = document.createElement("h4"); 
+    const windEl = document.createElement("h4"); 
+    
+    separatorEl.textContent=("//////////")
+    separator2El.textContent=("//////////")
+    separator3El.textContent=("//////////")
+    separator4El.textContent=("//////////")
+    minTempEl.textContent = `Temperatura minima: ${(weatherData.main.temp_min - 273.15).toFixed(1)}ºC`; 
+    maxTempEl.textContent = `Temperatura massima: ${(weatherData.main.temp_max - 273.15).toFixed(1)}ºC`; 
+    feelsLikeEl.textContent = `Temperatura percepita: ${(weatherData.main.feels_like - 273.15).toFixed(1)}ºC`; 
+    humidityEl.textContent = `Umidità: ${weatherData.main.humidity}%`; 
+    windEl.textContent = `Vento: ${weatherData.wind.speed} m/s`; 
+
+    wrapperEl.classList.add("city-modal")
+
+    wrapperEl.appendChild(minTempEl); 
+    wrapperEl.appendChild(separatorEl)
+    wrapperEl.appendChild(maxTempEl); 
+    wrapperEl.appendChild(separator2El)
+    wrapperEl.appendChild(feelsLikeEl); 
+    wrapperEl.appendChild(separator3El)
+    wrapperEl.appendChild(humidityEl); 
+    wrapperEl.appendChild(separator4El)
+    wrapperEl.appendChild(windEl);
+  }
+  //END ELEMENTI ADDIZIONALI
   return wrapperEl;
 };
 //END GENERATORE CARTE
 
-//CHIAMATA PER GENERARE DALLE CORDINATE LE CARTE
-const palermo = async () => {
-  const data = await getData(13.5833, 37.8167);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
+//CHIAMATA PER GENERARE DAGLI ID LE CARTE
+
+const generateCards = async () => {
+  //array di id per ogni città
+  const idsArray = [
+    2523920, //palermo
+    2525068, //catania
+    2525763, //agrigento
+    2525448, //caltanissetta
+    2524818, //enna
+    2524170, //messina
+    2523650, //ragusa
+    2523083, //siracusa
+    2522876, //trapani
+  ];
+
+  const weatherDataArray = await getWeatherData(idsArray);
+
+  for (let weatherData of weatherDataArray.list) {
+    rootEl.appendChild(cityGen(weatherData));
+  }
 };
 
-const catania = async () => {
-  const data = await getData(15.0872, 37.5021);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
+generateCards();
 
-const agrigento = async () => {
-  const data = await getData(13.5, 37.45);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
-
-const caltanissetta = async () => {
-  const data = await getData(14.0642, 37.3745);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
-
-const enna = async () => {
-  const data = await getData(14.2892, 37.5588);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
-
-const messina = async () => {
-  const data = await getData(15.5497, 38.1933);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
-
-const ragusa = async () => {
-  const data = await getData(14.6, 36.9167);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
-
-const siracusa = async () => {
-  const data = await getData(15.2792, 37.0881);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
-
-const trapani = async () => {
-  const data = await getData(12.6667, 37.8333);
-  const weatherData = await getWeatherData(data.coord);
-  rootEl.appendChild(cityGen(weatherData));
-};
-
-
-palermo();
-catania();
-agrigento();
-caltanissetta();
-enna();
-messina();
-ragusa();
-siracusa();
-trapani();
-//END
-
-//FITRO
-select.addEventListener("change", () => {
-  let value = select.value;
-  palermo.style.display = "none";
-  catania.style.display = "none";
-  agrigento.style.display = "none";
-  caltanissetta.style.display = "none";
-  enna.style.display = "none";
-  messina.style.display = "none";
-  ragusa.style.display = "none";
-  siracusa.style.display = "none";
-  trapani.style.display = "none";
-
-  if (value === "Palermo") {
-    palermo.style = "block";
-  } else if (value === "Catania") {
-    catania.style.display = "block";
-  } else if (value === "Agrigento") {
-    agrigento.style.display = "block";
-  } else if (value === "Caltanissetta") {
-    caltanissetta.style.display = "block";
-  } else if (value === "Enna") {
-    enna.style.display = "block";
-  } else if (value === "Messina") {
-    messina.style.display = "block";
-  } else if (value === "Ragusa") {
-    ragusa.style.display = "block";
-  } else if (value === "Siracusa") {
-    siracusa.style.display = "block";
-  } else if (value === "Trapani") {
-    trapani.style.display = "block";
+//Filtro
+select.addEventListener("change", (evt) => {
+  let id = evt.target.value;
+  if (id === "") {
+    generateCards();
+  } else {
+    getWeatherData([id]).then((weatherDataArray) => {
+      rootEl.textContent = "";
+      let card = cityGen(weatherDataArray.list[0]);
+      card.classList.add("single-city");
+      
+      rootEl.appendChild(card);
+    });
   }
 });
+//END FILTRO
+
+
+//MODALE CHE SE CLICCATA UNA CARTA SI APRE
+let openModal=(weatherData)=>{
+  modal.style.display="block"
+  let modalContent =document.querySelector(".modal-content")
+
+  modalContent.appendChild(cityGen(weatherData))
+};
+
+let closeModal=()=>{
+  modal.style.display="none"
+  let modalContent=document.querySelector(".modal-content")
+  modalContent.removeChild(card)
+};
+
+span.onclick= ()=>{
+  closeModal();
+}
+//END MODALE
+
