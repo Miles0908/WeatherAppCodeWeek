@@ -11,6 +11,7 @@
   height: 235px;
   margin: 20px;
   padding: 25px;
+  
   background: radial-gradient(
       178.94% 106.41% at 26.42% 106.41%,
       #b1f3ff 0%,
@@ -37,8 +38,10 @@
 }
 
 .icon {
+
   margin-top: 7px;
-  padding-left: 200px;
+  
+  /* padding-left: 200px; */
   background-color: transparent;
 
   border-radius: 12px;

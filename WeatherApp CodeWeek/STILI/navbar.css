@@ -40,14 +40,15 @@
   padding: 2px;
   object-fit: contain;
   justify-content: center;
-
+  color: aliceblue;
  
   border-radius: 12px;
   text-decoration: none;
 }
 
 .navList a li:hover {
-  background-color: var(--color-lightGrey);
+  background-color: var(--color-modal);
+  color: aliceblue;
   border-radius: 12px;
   transition: all ease-in-out 0.4s;
 }
